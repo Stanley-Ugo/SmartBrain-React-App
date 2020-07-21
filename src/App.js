@@ -52,8 +52,8 @@ class App extends Component {
         name: data.name,
         email: data.email,
         entries: data.entries,
-        joined: data.joined 
-      }})
+        joined: data.joined, 
+      }}),
     );
   };
 
@@ -82,12 +82,28 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
     app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-      .then((response) =>
+      .predict(
+              Clarifai.FACE_DETECT_MODEL, 
+               this.state.input)
+      .then((response) => {
+        if (response) {
+          fetch('http://localhost:3000/image', {
+            method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+            id: this.state.user.id
+            })
+          })
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, {entries: count}))
+          })
+        }
         this.displayFacebox(this.calculateFaceLocation(response))
-      )
+      })
       .catch((err) => console.log(err));
-  };
+  }
+  
 
   onRouteChange = (route) => {
     if (route === "signout") {
@@ -110,7 +126,7 @@ class App extends Component {
         {route === "home" ? (
           <div>
             <Logo />
-            <Rank />
+            <Rank name={this.state.user.name} entries={this.state.user.entries}/>
             <ImageLinkForm
               oninputChange={this.oninputChange}
               onButtonSubmit={this.onButtonSubmit}
