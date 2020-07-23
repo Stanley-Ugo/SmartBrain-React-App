@@ -23,7 +23,7 @@ class Register extends React.Component {
   }
 
   onSubmitRegister = () => {
-    fetch('https://immense-beach-05043.herokuapp.com//register', {
+    fetch('https://cors-anywhere.herokuapp.com/https://immense-beach-05043.herokuapp.com//register', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -60,7 +60,7 @@ class Register extends React.Component {
                   onChange={ this.onNameChange }
                 />
               </div>
-              <div class="mt3">
+              <div className="mt3">
                 <label className="db fw6 lh-copy f6" htmlFor="email-address">
                   Email
                 </label>
